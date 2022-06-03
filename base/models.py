@@ -43,19 +43,36 @@ class SubCategory(models.Model):
             super(SubCategory, self).save(*args, **kwargs)
 
 
+class Region(models.Model):
+    name = models.CharField(max_length=300, null=True, blank=True)
+
+
+class SubRegion(models.Model):
+    name = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=400, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     postered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=2)
-    location = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  location = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    subregion = models.ForeignKey(SubRegion, on_delete=models.SET_NULL, null=True)
+    slug = models.SlugField(max_length=500, unique=True, null=True, blank=True)
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+            super(Product, self).save(*args, **kwargs)
+            
 
 
 class Vehicle(Product):
@@ -72,7 +89,7 @@ class Vehicle(Product):
     property_type = models.CharField(max_length=500, null=True, blank=True) 
 
 
-class Property(models.Model):
+class Property(Product):
      #  properties related to property
     seller_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     colour = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
@@ -91,23 +108,22 @@ class Property(models.Model):
     dining_room =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
 
 
-class Electronic(models.Model):
+class Electronic(Product):
     brand =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     electronic_model =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     condition =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
 
 
-class Job(models.Model):
+class Job(Product):
     #  properties for job
     contact_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     working_hours = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     expiry_date = models.DateTimeField(auto_now=True)
     company_profile = models.TextField(max_length=600, null=True, blank=True)
     job_description = models.TextField(max_length=5000, null=True, blank=True)
-    #  properties for clothing and breaty
 
 
-class ClothingAndBeauty(models.Model):
+class ClothingAndBeauty(Product):
     #  properties for clothing and breaty
     product_color = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     gender = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
@@ -119,20 +135,13 @@ class ClothingAndBeauty(models.Model):
     general_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     
 
-class Pet(models.Model):
+class Pet(Product):
     #  properties on Pets
     pet_age= models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     cat_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     dog_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles 
 
 
-class Region(models.Model):
-    name = models.CharField(max_length=300, null=True, blank=True)
-
-
-class SubRegion(models.Model):
-    name = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
 
 
 
