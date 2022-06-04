@@ -3,6 +3,8 @@ from django.contrib.auth.models import  AbstractUser
 from django.template.defaultfilters import slugify
 
 
+
+
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField(unique=True)
@@ -40,7 +42,17 @@ class SubCategory(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-            super(SubCategory, self).save(*args, **kwargs)
+        super(SubCategory, self).save(*args, **kwargs)
+
+#  Refers to properties to search for brands, make, vehicles
+class Type(models.Model):
+    type_name = models.CharField(max_length=200, null=True, blank=True)
+    # image = models.ImageField()
+    sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=True)
+    
+    def __str__(self):
+        return self.type_name
+
 
 
 class Region(models.Model):
@@ -57,6 +69,8 @@ class Product(models.Model):
     description = models.TextField(null=True, blank=True)
     postered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
+    #  type represent brand, make, property type, etc
+    type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=2)
     #  location = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     subregion = models.ForeignKey(SubRegion, on_delete=models.SET_NULL, null=True)
@@ -77,7 +91,7 @@ class Product(models.Model):
 
 class Vehicle(Product):
     #  properties related to the Vehicle
-    make = models.CharField(max_length=500, null=True, blank=True)  # extra for phones,cars etc
+    #  make = models.CharField(max_length=500, null=True, blank=True)  # extra for phones,cars etc
     model = models.CharField(max_length=500, null=True, blank=True)  # extra for phones,cars etc
     fuel_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     body_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
@@ -91,8 +105,9 @@ class Vehicle(Product):
 
 class Property(Product):
      #  properties related to property
-    seller_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  property_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     colour = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    seller_type = models.CharField(max_length=200, null=True, blank=True)
     broker_fee = models.BooleanField(default=False)  # extra for vehicles
     plot_size = models.CharField(max_length=200, null=True, blank=True)  # extra for vehicles
     erf_size = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
@@ -109,15 +124,18 @@ class Property(Product):
 
 
 class Electronic(Product):
-    brand =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  brand will be represented by type whicjh is in the Product class
+    #  brand =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     electronic_model =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     condition =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
 
 
 class Job(Product):
     #  properties for job
-    contact_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    working_hours = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    contact_type = models.CharField(max_length=500, null=True, blank=True)  
+    #  working_hours = models.CharField(max_length=500, null=True, blank=True)
+    #  working_hours will be used to display products on top 
+    #  working_hours = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, blank=True)
     expiry_date = models.DateTimeField(auto_now=True)
     company_profile = models.TextField(max_length=600, null=True, blank=True)
     job_description = models.TextField(max_length=5000, null=True, blank=True)
@@ -129,17 +147,18 @@ class ClothingAndBeauty(Product):
     gender = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     age_group = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     skin_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    shoe_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    shoe_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    dress_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  shoe_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  dress_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     general_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    size = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     
 
 class Pet(Product):
     #  properties on Pets
+    #  its type will represent a breed eg dog will have bulldog as breed
     pet_age= models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    cat_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    dog_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles 
+    #  cat_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    #  dog_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles 
 
 
 
