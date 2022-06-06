@@ -3,7 +3,11 @@ from django.contrib.auth.models import  AbstractUser
 from django.template.defaultfilters import slugify
 
 
-
+# class VehicleModel:
+#     def __init__(self,model, fuel_type):
+#         self.model = model
+#         self.fuel_type
+    
 
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -52,7 +56,6 @@ class Type(models.Model):
     
     def __str__(self):
         return self.type_name
-
 
 
 class Region(models.Model):
@@ -159,20 +162,3 @@ class Pet(Product):
     pet_age= models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     #  cat_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     #  dog_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles 
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-
-
-
