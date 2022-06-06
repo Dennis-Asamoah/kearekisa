@@ -13,7 +13,7 @@ class Transmission:
         self.transmission = transmission
 
 
-class VehicleCondtion:
+class VehicleCondition:
     def __init__(self, vehicle_condition):
         self.vehicle_condition = vehicle_condition
 

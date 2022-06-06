@@ -3,7 +3,8 @@ from .models import  *
 
 @admin.register(Electronic)
 class ElectronicAdmin(admin.ModelAdmin):
-    exclude = ('condition', )  # ','ticket_status','ticket_end ')
+    #  exclude = ('condition', )  # ','ticket_status','ticket_end ')
+    pass
 
 # Register your models here.
 admin.site.register(User)

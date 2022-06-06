@@ -1,6 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import  AbstractUser
 from django.template.defaultfilters import slugify
+from  .options_classes.options_list.vechicle_option_lists import  * 
+from .options_classes.options_list.property_option_lists import *
+from .options_classes.options_list.electronic_option_lists import *
+from .options_classes.options_list.beauty_options_lists import *
+from .options_classes.options_list.job_option_lists import *
+from .options_classes.options_list.pet_options_list import *
+
+
 
 
 # class VehicleModel:
@@ -96,25 +104,26 @@ class Vehicle(Product):
     #  properties related to the Vehicle
     #  make = models.CharField(max_length=500, null=True, blank=True)  # extra for phones,cars etc
     model = models.CharField(max_length=500, null=True, blank=True)  # extra for phones,cars etc
-    fuel_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    body_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    transmission = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    fuel_type = models.CharField(max_length=500, choices=fuel_type_dropdown, null=True, blank=True)  # extra for vehicles
+    body_type = models.CharField(max_length=500, choices=body_type_dropdown, null=True, blank=True)  # extra for vehicles
+    transmission = models.CharField(max_length=500, choices=transmission_dropdown, null=True, blank=True)  # extra for vehicles
     mileage = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    conditions = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    conditions = models.CharField(max_length=500, choices=condition_dropdown, null=True, blank=True)  # extra for vehicles
     number_of_ownners = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    colour = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    property_type = models.CharField(max_length=500, null=True, blank=True) 
+    colour = models.CharField(max_length=500, choices=vehicle_colour_dropdown, null=True, blank=True)  # extra for vehicles
+    #  property_type = models.CharField(max_length=500, null=True, blank=True) 
 
 
 class Property(Product):
      #  properties related to property
     #  property_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    colour = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    seller_type = models.CharField(max_length=200, null=True, blank=True)
+    #  colour = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    seller_type = models.CharField(max_length=200, choices=seller_type_dropdown, null=True, blank=True)
     broker_fee = models.BooleanField(default=False)  # extra for vehicles
+    #  broker_fee = models.CharField(max_length=200, choices=broker_fee_dropdown, null=True, blank=True)  # extra for vehicles
     plot_size = models.CharField(max_length=200, null=True, blank=True)  # extra for vehicles
     erf_size = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    furnishing = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    furnishing = models.CharField(max_length=500, choices=furnishing_dropdown, null=True, blank=True)  # extra for vehicles
     fenced = models.BooleanField(default=False)  # extra for vehicles
     property_address = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     parking_space = models.BooleanField(default=False)
@@ -130,13 +139,13 @@ class Electronic(Product):
     #  brand will be represented by type whicjh is in the Product class
     #  brand =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     electronic_model =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    condition =  models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    condition =  models.CharField(max_length=500, choices=condition_dropdown, null=True, blank=True)  # extra for vehicles
 
 
 class Job(Product):
     #  properties for job
-    contact_type = models.CharField(max_length=500, null=True, blank=True)  
-    #  working_hours = models.CharField(max_length=500, null=True, blank=True)
+    contact_type = models.CharField(max_length=500, choices=contract_type_dropdown, null=True, blank=True)  
+    working_hours = models.CharField(max_length=500, choices=working_hours_dropdown, null=True, blank=True)
     #  working_hours will be used to display products on top 
     #  working_hours = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True, blank=True)
     expiry_date = models.DateTimeField(auto_now=True)
@@ -147,18 +156,18 @@ class Job(Product):
 class ClothingAndBeauty(Product):
     #  properties for clothing and breaty
     product_color = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    gender = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    age_group = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    skin_type = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    #  shoe_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    #  dress_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    general_sizes = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    size = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
+    gender = models.CharField(max_length=500, choices=gender_dropdown, null=True, blank=True)  # extra for vehicles
+    age_group = models.CharField(max_length=500, choices=age_group_dropdown, null=True, blank=True)  # extra for vehicles
+    skin_type = models.CharField(max_length=500, choices=skin_type_dropdown, null=True, blank=True)  # extra for vehicles
+    shoe_sizes = models.CharField(max_length=500, choices=shoe_sizes_dropdown,null=True, blank=True)  # extra for vehicles
+    dress_sizes = models.CharField(max_length=500, choices=dress_sizes_dropdown, null=True, blank=True)  # extra for vehicles
+    general_sizes = models.CharField(max_length=500, choices=general_dropdown, null=True, blank=True)  # extra for vehicles
+    #  size = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     
 
 class Pet(Product):
     #  properties on Pets
     #  its type will represent a breed eg dog will have bulldog as breed
-    pet_age= models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    #  cat_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    #  dog_breed = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles 
+    pet_age= models.CharField(max_length=500, choices=age_dropdown, null=True, blank=True)  # extra for vehicles
+    cat_breed = models.CharField(max_length=500, choices=cat_breed_dropdown, null=True, blank=True)  # extra for vehicles
+    dog_breed = models.CharField(max_length=500, choices=dog_breed_dropdown, null=True, blank=True)  # extra for vehicles 
