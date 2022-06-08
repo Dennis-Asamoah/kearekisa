@@ -171,3 +171,6 @@ class Pet(Product):
     pet_age= models.CharField(max_length=500, choices=age_dropdown, null=True, blank=True)  # extra for vehicles
     cat_breed = models.CharField(max_length=500, choices=cat_breed_dropdown, null=True, blank=True)  # extra for vehicles
     dog_breed = models.CharField(max_length=500, choices=dog_breed_dropdown, null=True, blank=True)  # extra for vehicles 
+
+
+#class 
