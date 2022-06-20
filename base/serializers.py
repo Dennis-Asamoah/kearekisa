@@ -86,7 +86,3 @@ class PetSerializer(ModelSerializer):
 
         model = Pet
         fields = '__all__'
-
-
-
-
