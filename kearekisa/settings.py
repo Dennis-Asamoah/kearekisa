@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'base',
-    'app_image'
+    'app_image',
+    'kearekisa_api',
 ]
 
 MIDDLEWARE = [
