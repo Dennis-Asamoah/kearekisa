@@ -1,4 +1,3 @@
-from dataclasses import fields
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import Serializer
 from .models import *
@@ -34,15 +33,28 @@ class TypeSerializer(ModelSerializer):
 
 class RegionSerializer(ModelSerializer):
     class Meta:
-
         model = Region
         fields = '__all__'
 
 
 class SubRegionSerializer(ModelSerializer):
-    class Meta:
+    region = RegionSerializer(many=False, read_only=True)
 
+    class Meta:
         model = SubRegion
+        fields = '__all__'
+
+
+class RegionSerializer1(ModelSerializer):
+    region = SubRegionSerializer(many=True, read_only=True)
+    class Meta:
+        model = Region
+        fields = ['name', 'slug', 'region']
+
+
+class ProductSerializer(ModelSerializer):
+    class Meta:
+        model  = Product
         fields = '__all__'
 
 
@@ -55,15 +67,13 @@ class VehicleSerializer(ModelSerializer):
 
 class PropertySerializer(ModelSerializer):
     class Meta:
-
         model = Property
         fields = '__all__'
 
 
-class ElectronicSerialaizer(ModelSerializer):
+class ElectronicSerializer(ModelSerializer):
     class Meta:
-
-        Model = Electronic
+        model = Electronic
         fields = '__all__'
 
 

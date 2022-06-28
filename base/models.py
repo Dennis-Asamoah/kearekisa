@@ -39,7 +39,7 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-            super(Category, self).save(*args, **kwargs)
+        super(Category, self).save(*args, **kwargs)
 
 
 class SubCategory(models.Model):
@@ -61,18 +61,42 @@ class Type(models.Model):
     type_name = models.CharField(max_length=200, null=True, blank=True)
     # image = models.ImageField()
     sub_category = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=True)
+    slug = models.SlugField(max_length=300, unique=True, null=True, blank=True)
     
     def __str__(self):
         return self.type_name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.type_name)
+        super(Type, self).save(*args, **kwargs)
 
 
 class Region(models.Model):
     name = models.CharField(max_length=300, null=True, blank=True)
+    slug = models.SlugField(max_length=300, unique=True, null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
 
+    def save(self, *args, **kwargs):
+       if not self.slug:
+           self.slug = slugify(self.name)
+       super(Region, self).save(*args, **kwargs)
+        
 
 class SubRegion(models.Model):
     name = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
+    region = models.ForeignKey(Region, related_name='region', on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(max_length=300, unique=True, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(SubRegion, self).save(*args, **kwargs)
 
 
 class Product(models.Model):
@@ -96,7 +120,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
-            super(Product, self).save(*args, **kwargs)
+        super(Product, self).save(*args, **kwargs)
             
 
 

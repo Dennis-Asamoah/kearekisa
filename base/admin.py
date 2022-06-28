@@ -6,9 +6,18 @@ class ElectronicAdmin(admin.ModelAdmin):
     #  exclude = ('condition', )  # ','ticket_status','ticket_end ')
     pass
 
+
+# @admin.register(Vehicle)
+# class VehicleAdmin(admin.ModelAdmin):
+#     list_display = ()
+
 # Register your models here.
 admin.site.register(User)
-admin.site.register(Category)
+#admin.site.register(Category)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'slug', 'date')
+
 admin.site.register(SubCategory)
 admin.site.register(Vehicle)
 admin.site.register(Property)
