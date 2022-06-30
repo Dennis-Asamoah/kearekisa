@@ -1,11 +1,10 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import Serializer
 from .models import *
-
+from app_image.serializers import *
 
 class UserSerializer(ModelSerializer):
     class Meta:
-        
         model = User
         fields = ['name', 'email']
 
@@ -19,7 +18,6 @@ class CategorySerializer(ModelSerializer):
 
 class  SubCategorySerializer(ModelSerializer):
     class Meta:
-
         model = SubCategory
         fields = '__all__'
 
@@ -59,40 +57,55 @@ class ProductSerializer(ModelSerializer):
 
 
 class VehicleSerializer(ModelSerializer):
-    class Meta:
+    vehicle_image = VehicleImageSerilaizer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
 
+    class Meta:
         model = Vehicle
         fields = '__all__'
 
 
 class PropertySerializer(ModelSerializer):
+    property_image = PropertyImageSerializer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
+
     class Meta:
         model = Property
         fields = '__all__'
 
 
 class ElectronicSerializer(ModelSerializer):
+    electronic_image = ElectronicImageSerializer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
+
     class Meta:
         model = Electronic
         fields = '__all__'
+        #  fields = ['id', 'name', 'electronic_image']
 
 
 class ClothingAndBeautySerializer(ModelSerializer):
-    class Meta:
+    clothingandbeauty_image = ClothingAndBeautyImageSerializer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
 
+    class Meta:
         model = ClothingAndBeauty
         fields = '__all__'
 
 
 class JobSerializer(ModelSerializer):
-    class Meta:
+    job_image = JobImageSerializer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
 
+    class Meta:
         model = Job
         fields = '__all__'
 
 
 class PetSerializer(ModelSerializer):
-    class Meta:
+    pet_image = PetImageSerializer(many=True, read_only=True)
+    postered_by = UserSerializer(many=False, read_only=True)
 
+    class Meta:
         model = Pet
         fields = '__all__'

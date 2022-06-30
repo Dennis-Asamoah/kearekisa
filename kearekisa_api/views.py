@@ -1,3 +1,4 @@
+import json
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import  generics
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 from base.models import * 
 from base.serializers import *
 from .utilities import *
+
 
 class ListCategories(APIView):
     # queryset = Category.objects.all()
@@ -32,8 +34,63 @@ class RetrieveSubCategory(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# lists all the products of a subcategory without filtering
+class RetrieveSubCategoryProducts(APIView):
+    """ 
+    This class is used to list all  the products under a subcategory.
+    eg if a subcategory  is  'cell-phones-and-tablets', then all products under
+    this subcategory will be listed . In this case all sumsung, iphones, oppo and 
+    other phone brands will all be listed without any filtering whatsoever
+
+    """
+    category = {'Electronics': ElectronicSerializer, 'Pet': PetSerializer}
+
+    def get(self, request, slug):
+        print(request.GET)
+        print(request.data)
+        print(request.body)
+        # subcategory = SubCategory.objects.get(slug=slug)
+        # category_name = subcategory.category.name
+        item = subcategory_product(slug)
+        products = item[0]() #  .filter(electronic_model="S6")
+        # x = exec("electronic_model='S6'")
+        # print (x)
+        #  products = item[0]().filter(**request.data)
+        serializer = self.category[item[1]](products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FilterProducts(APIView):
+    """
+        This class is the  similar to  the RetreiveSubcategoryProducts class
+        with the exception that using the post method , we get the attributes  which
+        will be used to filter products in a subcategory.  
+        eg 
+        data_to_be_used_for_filtering = request.data  # In a POST method
+        subcategory = Subcategory.objects.get(slug=slug)
+        # Since we will have a dictionary of keys-word arguments we use
+        # ** wildcat for uppacking  eg x = {'arg1': 'value1', 'arg22': 'value2'} 
+        # .filter(**x) == .filter(arg1=value1, arg2='value2')
+        subcategory.electronics_set_all().filter(**data)
+
+    """
+    category = {'Electronics': ElectronicSerializer, 'Pet': PetSerializer}
+    # the get method is used for manual testing purposes
+    def get(self, request, slug):
+        x = request.GET
+        print(x)
+        return Response(json.dumps('kio'), status=status.HTTP_200_OK)
+
+    def post(self, request, slug):
+        data_for_filtering = request.data
+        item = subcategory_product(slug)
+        products = item[0]().filter(**data_for_filtering)
+        serializer = self.category[item[1]](products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+            
+
 class RetrieveType(APIView):
-    mapper = {'Pet':PetSerializer, 'Electronics':ElectronicSerializer}
+    mapper = {'Pet': PetSerializer, 'Electronics': ElectronicSerializer}
 
     def get(self, request, slug):
         # c_type = Type.objects.get(slug=slug)

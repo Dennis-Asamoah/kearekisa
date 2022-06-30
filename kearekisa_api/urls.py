@@ -7,6 +7,10 @@ urlpatterns = [
     path('categories/', views.ListCategories.as_view(), name='categories'),
     path('categories/<slug:slug>',views.RetrieveCategory.as_view(), name='retrieve_category'),
     path('subcategories/<slug:slug>', views.RetrieveSubCategory.as_view(), name='retrieve_subcategory'),
+    path('subcategories/<slug:slug>/products', views.RetrieveSubCategoryProducts.as_view(), 
+    name='retrieve_subcategory_products'
+    ),
+    path('subcategories/<slug:slug>/filter', views.FilterProducts.as_view(), name='filter_products'),
     path('types/<slug:slug>', views.RetrieveType.as_view(), name='retrieve_type'),
     path('regions/', views.ListRegions.as_view(), name='regions'),
     path('regions/<slug:slug>', views.RetrieveRegion.as_view(), name='retrieve_regions'),
