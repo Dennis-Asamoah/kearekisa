@@ -17,6 +17,8 @@ class CategorySerializer(ModelSerializer):
 
 
 class  SubCategorySerializer(ModelSerializer):
+    category = CategorySerializer(many=False, read_only=True)
+
     class Meta:
         model = SubCategory
         fields = '__all__'
@@ -59,6 +61,7 @@ class ProductSerializer(ModelSerializer):
 class VehicleSerializer(ModelSerializer):
     vehicle_image = VehicleImageSerilaizer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Vehicle
@@ -68,6 +71,7 @@ class VehicleSerializer(ModelSerializer):
 class PropertySerializer(ModelSerializer):
     property_image = PropertyImageSerializer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Property
@@ -77,6 +81,7 @@ class PropertySerializer(ModelSerializer):
 class ElectronicSerializer(ModelSerializer):
     electronic_image = ElectronicImageSerializer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Electronic
@@ -87,6 +92,7 @@ class ElectronicSerializer(ModelSerializer):
 class ClothingAndBeautySerializer(ModelSerializer):
     clothingandbeauty_image = ClothingAndBeautyImageSerializer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = ClothingAndBeauty
@@ -96,6 +102,7 @@ class ClothingAndBeautySerializer(ModelSerializer):
 class JobSerializer(ModelSerializer):
     job_image = JobImageSerializer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Job
@@ -105,6 +112,7 @@ class JobSerializer(ModelSerializer):
 class PetSerializer(ModelSerializer):
     pet_image = PetImageSerializer(many=True, read_only=True)
     postered_by = UserSerializer(many=False, read_only=True)
+    category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Pet
@@ -112,19 +120,19 @@ class PetSerializer(ModelSerializer):
 
 
 # class CategoryProductsAndSubcategorySerializer(Serializer):
-#     def __init__(self, ob, category_name):
-#     # def __init__(self, *args, **kwargs ):    
-#         super().__init__(ob)
-#         # super().__init__(args[0], **kwargs)
-#         if category_name == 'Electronics':
-#         # if args[1] == 'Electronics':    
+#     # def __init__(self, ob, category_name):
+#     def __init__(self, *args, **kwargs ):    
+#         # super().__init__(ob)
+#         super().__init__(*args, **kwargs)
+#         # if category_name == 'Electronics':
+#         if args[1] == 'Electronics':    
 #             print('yess')
-#             category_product = ElectronicSerializer(many=True, read_only=True)
-#         # elif category_name == 'Vehicles':
-#         #     category_product = VehicleSerializer(many=True, read_only=True)
-#         # # Do it for the rest of the categories
-#             # subcategory = SubCategorySerializer(many=True, read_only=True)
-#         subcategory = SubCategorySerializer(many=True, read_only=True)
+# #             category_product = ElectronicSerializer(many=True, read_only=True)
+# #         # elif category_name == 'Vehicles':
+# #         #     category_product = VehicleSerializer(many=True, read_only=True)
+# #         # # Do it for the rest of the categories
+# #             # subcategory = SubCategorySerializer(many=True, read_only=True)
+# #         subcategory = SubCategorySerializer(many=True, read_only=True)
 
             
 class ElectronicProductsAndSubcategorySerializer(Serializer):

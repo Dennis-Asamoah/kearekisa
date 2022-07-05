@@ -174,7 +174,10 @@ class ListSubCategoryProductsAndTypes(APIView):
         data = CategoryProductsAndSub(category_product=subcategory_product, subcategory=None, type=product_type)
         serializer = self.categories[category_name](data)
         return  Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
+class RetrieveProduct(APIView):
+    pass
 
 
 
