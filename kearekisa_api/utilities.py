@@ -1,5 +1,8 @@
-from base.models import Type
-from base.models import SubCategory
+# from base.models import Category, Electronic, Type
+# from base.models import SubCategory
+from base.models import *
+from collections import namedtuple
+
 
 electronic_subcategories = [
     'cell-phones-and-tablets',
@@ -27,6 +30,10 @@ pet_subcategories =[
 
 ]
 
+
+CategoryProductsAndSub = namedtuple('product_and_sub', ['category_product', 'subcategory', 'type'] )
+
+
 def product_type(slug):
     item_type = Type.objects.get(slug=slug)
     type_name = item_type.sub_category.category.name
@@ -53,4 +60,31 @@ def  subcategory_product(slug):
         return subcategory.job_set.all, category_name
     else:
         return subcategory.pet_set.all, category_name
+
+def category_products(slug):
+    category = Category.objects.get(slug=slug)
+    category_name = category.name
+    if category_name == 'Electronics':
+        return Electronic.objects.all, category_name
+    elif category_name == 'Vehicles':
+        return Vehicle.objects.all, category_name
+    # do not forget to do it for the rest of the categories 
+
+def category_product_and_sub(slug):
+    category = Category.objects.get(slug=slug)
+    category_name = category.name
+    if category_name == 'Electronics':
+        return Electronic.objects.all(), category.subcategory_set.all(), category_name
+    elif category_name == 'Pet':
+        return Pet.objects.all(), category.subcategory_set.all(), category_name
+    # do not forget to do it for the rest of the categories 
+
+def subcategory_product_and_types(slug):
+    subcategory = SubCategory.objects.get(slug=slug)
+    if slug in electronic_subcategories:
+        return subcategory.electronic_set.all(), subcategory.type_set.all(), subcategory.category.name
+    elif slug in pet_subcategories:
+        return subcategory.pet_set.all(), subcategory.type_set.all(), subcategory.category.name
+
+    # do not forget to do it for the rest of the categories 
 

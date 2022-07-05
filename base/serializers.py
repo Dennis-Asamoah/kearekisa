@@ -109,3 +109,50 @@ class PetSerializer(ModelSerializer):
     class Meta:
         model = Pet
         fields = '__all__'
+
+
+# class CategoryProductsAndSubcategorySerializer(Serializer):
+#     def __init__(self, ob, category_name):
+#     # def __init__(self, *args, **kwargs ):    
+#         super().__init__(ob)
+#         # super().__init__(args[0], **kwargs)
+#         if category_name == 'Electronics':
+#         # if args[1] == 'Electronics':    
+#             print('yess')
+#             category_product = ElectronicSerializer(many=True, read_only=True)
+#         # elif category_name == 'Vehicles':
+#         #     category_product = VehicleSerializer(many=True, read_only=True)
+#         # # Do it for the rest of the categories
+#             # subcategory = SubCategorySerializer(many=True, read_only=True)
+#         subcategory = SubCategorySerializer(many=True, read_only=True)
+
+            
+class ElectronicProductsAndSubcategorySerializer(Serializer):
+    category_product = ElectronicSerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)
+
+class VehicleProductsAndSubcategorySerializer(Serializer):
+    category_product = VehicleSerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)
+
+class PropertyProductsAndSubcategorySerializer(Serializer):
+    category_product = PropertySerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)
+
+class ClothingAndBeautyProductsAndSubcategorySerializer(Serializer):
+    category_product = ClothingAndBeautySerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)
+
+class JobProductsAndSubcategorySerializer(Serializer):
+    category_product = JobSerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)
+
+class PetProductsAndSubcategorySerializer(Serializer):
+    category_product = PetSerializer(many=True, read_only=True)
+    subcategory = SubCategorySerializer(many=True, read_only=True)
+    type = TypeSerializer(many=True, read_only=True)

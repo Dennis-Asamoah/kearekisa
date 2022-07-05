@@ -18,6 +18,19 @@ class ListCategories(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class ListCategoryProducts(APIView):
+    category_serializers = {
+        'Electronics': ElectronicSerializer, 
+        'Vehicles': VehicleSerializer
+        }
+
+    def get(self, request, slug):
+        category_object = category_products(slug)
+        category = category_object[0]()
+        serializer = self.category_serializers[category_object[1]](category, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        
 class RetrieveCategory(APIView):
     def get(self, request, slug):
         category = Category.objects.get(slug=slug)
@@ -126,3 +139,42 @@ class Test(APIView):
         #  x = region.region.all()
         serializer = RegionSerializer1(region, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListCategoryProductsAndSubcategory(APIView):
+    categories = {
+        'Electronics': ElectronicProductsAndSubcategorySerializer,
+        'Pet': PetProductsAndSubcategorySerializer,
+        # DO NOT FORGET TO PUT THE REST (IE hechicles,propers,clothing and job)
+    }
+
+    def get(self, request, slug):
+        category_products, subcategory, category_name = category_product_and_sub(slug)
+        # category_products, subcategory =  category_products(), subcategory()
+        # print(category_products)
+        # print(subcategory)
+        data = CategoryProductsAndSub(category_product=category_products, subcategory=subcategory, type=None)
+        # print(data)
+        # serializer = CategoryProductsAndSubcategorySerializer(data) #, category_name)
+        serializer = self.categories[category_name](data)  # , category_name)
+        print(serializer)
+        # print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListSubCategoryProductsAndTypes(APIView):
+    categories = {
+        'Electronics': ElectronicProductsAndSubcategorySerializer,
+        'Pet': PetProductsAndSubcategorySerializer,
+        # DO NOT FORGET TO PUT THE REST (IE hechicles,propers,clothing and job)
+    }
+
+    def get(self, request, slug):
+        subcategory_product, product_type, category_name = subcategory_product_and_types(slug)
+        data = CategoryProductsAndSub(category_product=subcategory_product, subcategory=None, type=product_type)
+        serializer = self.categories[category_name](data)
+        return  Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+

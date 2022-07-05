@@ -1,4 +1,3 @@
-from pyexpat import model
 from app_image.models import ClothingAndBeautyImage, ElectronicImage, JobImage, PetImage, PropertyImage, VehicleImage
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import Serializer
