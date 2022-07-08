@@ -23,6 +23,7 @@ urlpatterns = [
     views.ListSubCategoryProductsAndTypes.as_view(),
     name='retrieve_product_and_type'
     ),
+    path('<slug:category_slug>/<slug:subcategory_slug>/<slug:product_slug>', views.RetrieveProduct.as_view(), name='product'),
     path('regions1/<slug:slug>', views.Test.as_view(), name='test'),
 
 ]

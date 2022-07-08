@@ -160,7 +160,38 @@ class JobProductsAndSubcategorySerializer(Serializer):
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
 
+
 class PetProductsAndSubcategorySerializer(Serializer):
     category_product = PetSerializer(many=True, read_only=True)
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
+
+
+class ElectronicProductsAndItsRelatedProducts(Serializer):
+    product = ElectronicSerializer(many=False, read_only=True)
+    related_products = ElectronicSerializer(many=True, read_only=True)
+
+
+class VehicleProductsAndItsRelatedProducts(Serializer):
+    product  =VehicleSerializer(many=False, read_only=True)
+    related_products = VehicleSerializer(many=True, read_only=True)
+
+
+class PropertyProductsAndItsRelatedProducts(Serializer):
+    product = PropertySerializer(many=False, read_only=True)
+    related_products = PropertySerializer(many=True, read_only=True)
+
+
+class ClothingAndBeautyProductsAndItsRelatedProducts(Serializer):
+    product  =ClothingAndBeautySerializer(many=False, read_only=True)
+    related_products = ClothingAndBeautySerializer(many=True, read_only=True)
+
+
+class JobProductsAndItsRelatedProducts(Serializer):
+    product = JobSerializer(many=False, read_only=True)
+    related_products = JobSerializer(many=True, read_only=True)
+
+
+class PetProductsAndItsRelatedProducts(Serializer):
+    product = PetSerializer(many=False, read_only=True)
+    related_products = PetSerializer(many=True, read_only=True)

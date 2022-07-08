@@ -1,3 +1,4 @@
+from email.policy import HTTP
 import json
 from rest_framework.views import APIView
 from rest_framework import status
@@ -177,7 +178,17 @@ class ListSubCategoryProductsAndTypes(APIView):
 
 
 class RetrieveProduct(APIView):
-    pass
+    serializers = {
+        'Electronics': ElectronicProductsAndItsRelatedProducts,
+        'Pet': PetProductsAndItsRelatedProducts,
+         # Do not forget to do it for the rest of the categories
+    }
 
+    # def get(self, request, category_slug, subcategory_slug, product_slug):
+    def get(self, request, category_slug, subcategory_slug, product_slug):
+        product, related_products, product_name = product_and_related_prouducts(category_slug, product_slug)
+        combined_data = ProductAndItsRelatedProducts(product=product, related_products=related_products)
+        serializer = self.serializers[product_name](combined_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 

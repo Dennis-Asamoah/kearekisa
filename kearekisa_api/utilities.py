@@ -33,6 +33,8 @@ pet_subcategories =[
 
 CategoryProductsAndSub = namedtuple('product_and_sub', ['category_product', 'subcategory', 'type'] )
 
+ProductAndItsRelatedProducts = namedtuple('products_and_related_products', ['product', 'related_products'])
+
 
 def product_type(slug):
     item_type = Type.objects.get(slug=slug)
@@ -86,5 +88,25 @@ def subcategory_product_and_types(slug):
     elif slug in pet_subcategories:
         return subcategory.pet_set.all(), subcategory.type_set.all(), subcategory.category.name
 
-    # do not forget to do it for the rest of the categories 
+    # do not forget to do it for the rest of the categories
+
+def product_and_related_prouducts(category_slug, product_slug):
+    category = Category.objects.get(slug=category_slug)
+    category_name = category.name
+    if category.name == 'Electronics':
+        product = Electronic.objects.get(slug=product_slug)
+        related_products  =Electronic.objects.exclude(slug=product_slug)
+        return product, related_products, category_name 
+    elif category.name == 'Pets':
+        product = Pet.objects.get(slug=product_slug)
+        related_products  =Pet.objects.get(slug=product_slug)
+        return product, related_products, category_name 
+    # DO it for the rest  of the categories 
+
+# def product_and_related_prouducts_refactored(category_slug, product_slug):
+#     category = Category.objects.get(slug=category_slug)
+#     category_name = category.name
+#     product = category.
+
+
 
