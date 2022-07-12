@@ -44,9 +44,12 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=200, null=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, related_name='subcategory', on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
     date = models.DateField(auto_now_add=True, null=True)
+    # the category1 will be used for our serializers 
+    # category1 = models.ForeignKey(Category, related_name='subcategory1', on_delete=models.SET_NULL,
+    #  null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -55,6 +58,7 @@ class SubCategory(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super(SubCategory, self).save(*args, **kwargs)
+
 
 #  Refers to properties to search for brands, make, vehicles
 class Type(models.Model):
@@ -103,7 +107,7 @@ class Product(models.Model):
     name = models.CharField(max_length=400, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     postered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True)
     #  type represent brand, make, property type, etc
     type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=2)

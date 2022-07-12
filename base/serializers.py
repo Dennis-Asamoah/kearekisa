@@ -24,6 +24,15 @@ class  SubCategorySerializer(ModelSerializer):
         fields = '__all__'
 
 
+class CategoryAndItsSubcategoriesSeriaizer(ModelSerializer):
+    subcategory = SubCategorySerializer(many=True, read_only=False)
+
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+
 class TypeSerializer(ModelSerializer):
     class Meta:
 
@@ -80,13 +89,17 @@ class PropertySerializer(ModelSerializer):
 
 class ElectronicSerializer(ModelSerializer):
     electronic_image = ElectronicImageSerializer(many=True, read_only=True)
-    postered_by = UserSerializer(many=False, read_only=True)
+    # postered_by = UserSerializer(many=False)
     category = SubCategorySerializer(many=False, read_only=True)
 
     class Meta:
         model = Electronic
         fields = '__all__'
         #  fields = ['id', 'name', 'electronic_image']
+    
+    # def to_representation(self, instance):
+    #     self.fields['postered_by'] = UserSerializer()
+    #     return super(ElectronicSerializer, self).to_representation(instance)
 
 
 class ClothingAndBeautySerializer(ModelSerializer):
@@ -140,20 +153,24 @@ class ElectronicProductsAndSubcategorySerializer(Serializer):
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
 
+
 class VehicleProductsAndSubcategorySerializer(Serializer):
     category_product = VehicleSerializer(many=True, read_only=True)
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
+
 
 class PropertyProductsAndSubcategorySerializer(Serializer):
     category_product = PropertySerializer(many=True, read_only=True)
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
 
+
 class ClothingAndBeautyProductsAndSubcategorySerializer(Serializer):
     category_product = ClothingAndBeautySerializer(many=True, read_only=True)
     subcategory = SubCategorySerializer(many=True, read_only=True)
     type = TypeSerializer(many=True, read_only=True)
+
 
 class JobProductsAndSubcategorySerializer(Serializer):
     category_product = JobSerializer(many=True, read_only=True)

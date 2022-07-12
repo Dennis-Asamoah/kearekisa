@@ -1,7 +1,10 @@
 # from base.models import Category, Electronic, Type
 # from base.models import SubCategory
-from base.models import *
 from collections import namedtuple
+from base.models import *
+from base.serializers import *
+from app_image.models import *
+
 
 
 electronic_subcategories = [
@@ -76,9 +79,9 @@ def category_product_and_sub(slug):
     category = Category.objects.get(slug=slug)
     category_name = category.name
     if category_name == 'Electronics':
-        return Electronic.objects.all(), category.subcategory_set.all(), category_name
+        return Electronic.objects.all(), category.subcategory.all(), category_name
     elif category_name == 'Pet':
-        return Pet.objects.all(), category.subcategory_set.all(), category_name
+        return Pet.objects.all(), category.subcategory.all(), category_name
     # do not forget to do it for the rest of the categories 
 
 def subcategory_product_and_types(slug):
@@ -102,6 +105,47 @@ def product_and_related_prouducts(category_slug, product_slug):
         related_products  =Pet.objects.get(slug=product_slug)
         return product, related_products, category_name 
     # DO it for the rest  of the categories 
+
+# This function is responsible for publishin new items.
+def post_product(request, slug):
+    data = request.POST
+    images = request.FILES.getlist('images')
+    print(images)
+    category = Category.objects.get(slug=slug)
+    category_name = category.name
+    if category.name == 'Electronics':
+        # let save the data in the serialiser
+        serializer = ElectronicSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            # get obect with name,description and price
+            # replace with uuid which is more secure 
+            # you can put in try and except block but  will slow down programe alittle bit
+            # THIS PIECE OF CODE IS VERY ERROR PRONE AND MUST BE RESOLVED
+            print('5555555555555')
+            product_object = Electronic.objects.get(name=request.POST.get('name'), 
+            description=request.POST.get('description'),
+            price=request.POST.get('price')
+            )
+            print(product_object)
+            create_electronic_images = [
+            ElectronicImage.objects.create(electronic=product_object,image=image) for image in images
+            ]
+        else:
+            # Do something here 
+            print(serializer.errors)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # def product_and_related_prouducts_refactored(category_slug, product_slug):
 #     category = Category.objects.get(slug=category_slug)

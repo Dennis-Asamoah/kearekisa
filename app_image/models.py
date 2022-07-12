@@ -17,7 +17,7 @@ class PropertyImage(models.Model):
 
 
 class ElectronicImage(models.Model):
-    Electronic = models.ForeignKey(Electronic, related_name='electronic_image',
+    electronic = models.ForeignKey(Electronic, related_name='electronic_image',
      on_delete=models.SET_NULL, null=True, blank=True
      )
     image = models.ImageField(upload_to='electronic/')

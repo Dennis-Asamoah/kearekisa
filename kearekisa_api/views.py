@@ -1,9 +1,9 @@
-from email.policy import HTTP
 import json
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import  generics
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from base.models import * 
 from base.serializers import *
 from .utilities import *
@@ -20,23 +20,48 @@ class ListCategories(APIView):
 
 
 class ListCategoryProducts(APIView):
+    # parser_classes = [MultiPartParser, FormParser]
+
     category_serializers = {
         'Electronics': ElectronicSerializer, 
         'Vehicles': VehicleSerializer
         }
+    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request, slug):
         category_object = category_products(slug)
         category = category_object[0]()
         serializer = self.category_serializers[category_object[1]](category, many=True)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    # request.POST must contain category,subcategory,name
+    def post(self, request, slug):
+        # data = request.data
+        # c =request.POST
+        # print(c)
+        # xx = request.FILES.getlist('sss')
+        # print(xx)
+        # print(data)
+        # print(request.data.get('name'))
+        post_product(request, slug)
+        return  Response('hi', status=status.HTTP_200_OK)
+        
+
+
+
+class ListCategoriesAndItsSubcategories(APIView):
+    def get(self, request):
+        category = Category.objects.all()
+        serializer = CategoryAndItsSubcategoriesSeriaizer(category, many=True)
+        return  Response(serializer.data, status=status.HTTP_200_OK)
 
         
 class RetrieveCategory(APIView):
     def get(self, request, slug):
         category = Category.objects.get(slug=slug)
-        subcategories = category.subcategory_set.all()
-        serializer = CategorySerializer(subcategories, many=True)
+        subcategories = category.subcategory.all()
+        serializer = SubCategorySerializer(subcategories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -124,6 +149,15 @@ class ListRegions(APIView):
         region = Region.objects.all()
         serializer = RegionSerializer(region, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        data = request.data
+        serializer = RegionSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response('correct',)
+        else:
+            return Response('not correct')
 
 
 class RetrieveRegion(APIView):

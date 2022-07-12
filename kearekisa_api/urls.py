@@ -5,6 +5,9 @@ from . import views
 
 urlpatterns = [
     path('categories/', views.ListCategories.as_view(), name='categories'),
+    path('categories_and_subcategories', views.ListCategoriesAndItsSubcategories.as_view(),
+     name='categories_and_its_subcategories'),
+    # lists the subcategories of a particlar subcategory 
     path('categories/<slug:slug>',views.RetrieveCategory.as_view(), name='retrieve_category'),
     path('categories/<slug:slug>/products', views.ListCategoryProducts.as_view(), name='retrieve_category_produtcs'),
     path('subcategories/<slug:slug>', views.RetrieveSubCategory.as_view(), name='retrieve_subcategory'),
