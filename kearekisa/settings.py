@@ -28,6 +28,10 @@ SECRET_KEY = 'django-insecure--+buf%r(edya)1aheov+t2f^si1j!_q==849epcf$%4=n1546(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+INTERNAL_IPS = ('127.0.0.1', '192.168.11.102',)
+
+DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False,}
+
 ALLOWED_HOSTS = []
 
 
@@ -45,9 +49,11 @@ INSTALLED_APPS = [
     'base',
     'app_image',
     'kearekisa_api',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -138,3 +144,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #  Customizing our admin with Jazzmin 
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
+
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://localhost:6379/1',
+        'OPTIONS': {
+            'CLENT_CLASS': 'django_redis.client.DefaultClient'
+        }
+    }
+}

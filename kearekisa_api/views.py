@@ -4,20 +4,60 @@ from rest_framework import status
 from rest_framework import  generics
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.pagination import PageNumberPagination
+from django.core.cache import cache 
 from base.models import * 
 from base.serializers import *
 from .utilities import *
+
+# Serializer Pagina 
+class koo(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    # max_page_size = 50
+    # page_query_param = 'p'
+
+    # def get_paginated_response(self, data):
+    #     response = Response(data)
+    #     response['count'] = self.page.paginator.count
+    #     response['next'] = self.get_next_link()
+    #     response['previous'] = self.get_previous_link()
+    #     return response
+
 
 
 class ListCategories(APIView):
     # queryset = Category.objects.all()
     # serializer_class = CategorySerializer
     categories = Category.objects.all()
+    # pagination_class = PageNumberPagination
 
-    def get(self, request):
-        serializer = CategorySerializer(self.categories, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request, format=None):
+        # paginator = koo()
+        # categories = paginator.paginate_queryset(self.categories, request)
+        # serializer = CategorySerializer(categories, many=True, context={'request': 12})
+        # return paginator.get_paginated_response(serializer.data)
+        ## serializer = CategorySerializer(self.categories, many=True)
+        # -- editing response headers
+        # response = Response(serializer.data, status=status.HTTP_200_OK)
+        # response['nanme'] = 'Dennis'
+        # return response
+        ## return Response(serializer.data, status=status.HTTP_200_OK)
 
+        #cache results 
+        if cache.get('list_all_categories') is not None:
+            print('yesss')
+            serializer_data = cache.get('list_all_categories')
+            return Response(serializer_data, status=status.HTTP_200_OK)
+            
+        else:
+            serializer = CategorySerializer(self.categories, many=True)
+            cache.set('list_all_categories', serializer.data, None)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+        
+       
 
 class ListCategoryProducts(APIView):
     # parser_classes = [MultiPartParser, FormParser]
@@ -34,6 +74,7 @@ class ListCategoryProducts(APIView):
         serializer = self.category_serializers[category_object[1]](category, many=True)
         print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
     
     # request.POST must contain category,subcategory,name
     def post(self, request, slug):
