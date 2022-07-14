@@ -1,0 +1,107 @@
+[33mcommit 711d962367b99d139089e98a64ea3d313676b88d[m[33m ([m[1;36mHEAD -> [m[1;32moptimzation[m[33m)[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Thu Jul 14 15:15:40 2022 +0100
+
+    added serializers
+
+[33mcommit a8e049f1183acbf509171115f6b86a7c4ebc4f83[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Thu Jul 14 15:09:58 2022 +0100
+
+    cached results
+
+[33mcommit a8847d2d16b7ef87b2851399ed15f04c9160dd1f[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Thu Jul 14 13:52:55 2022 +0100
+
+    added redis cahing for optimization
+
+[33mcommit 9c1c78296c352ae57c459dc3bf692a67bbb5caac[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Tue Jul 12 11:44:01 2022 +0100
+
+    added images and text upload
+
+[33mcommit 1abc6a01cdadc41179d1d348e3f561b2846d1d2e[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Fri Jul 8 13:07:07 2022 +0100
+
+    all get methods implemented
+
+[33mcommit 4f0f550e50e80e91067540cd64ab6d089957906d[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Wed Jul 6 00:59:24 2022 +0100
+
+    added more combined serializers
+
+[33mcommit 881cb0d211516b81bc8b36bfc2df7675a297d607[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Tue Jul 5 19:26:05 2022 +0100
+
+    added combined serializers
+
+[33mcommit 2d2b416107322299608ab2a27021d85552dfb994[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Thu Jun 30 14:17:43 2022 +0100
+
+    added more a[pi views
+
+[33mcommit bcce85a077df6e6a46cb875a1da15cbe6b429654[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Tue Jun 28 14:22:58 2022 +0100
+
+    added read views
+
+[33mcommit 3897b6ad8148dad3e97ba7f933e9c09edfbf4ea4[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Tue Jun 21 04:21:25 2022 +0100
+
+    made a new password
+
+[33mcommit 48c4c3ce1986b02c90747a0afd0eb0ae61a111f9[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Mon Jun 20 03:04:52 2022 +0100
+
+    removed home endpoint
+
+[33mcommit d7c72bfa16fc25661547ee96fe15ba43c75dfeb6[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Sun Jun 12 11:30:24 2022 +0100
+
+    added serializers
+
+[33mcommit 94a26c70641460472a9e6fc5c18e88702c3d9067[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Wed Jun 8 21:26:29 2022 +0100
+
+    added more models
+
+[33mcommit 8a53005142ca4bac33ca6506d992bc64155d3e54[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Mon Jun 6 22:10:48 2022 +0100
+
+    added options to the database tables for easier usage
+
+[33mcommit c0f8b90bc0b26b24f720649e8593e1c0fa4199be[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Mon Jun 6 04:38:36 2022 +0100
+
+    added extra fields option and jazzmin admin customization
+
+[33mcommit 229109e6d5661f6c508028eda1e858ebf530c4f1[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Sat Jun 4 21:27:37 2022 +0100
+
+    added Type class
+
+[33mcommit 8fd9ef07faac22f2ce70dee288e2f0ba09b4b3c7[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Fri Jun 3 17:38:38 2022 +0100
+
+    base class to all product tables
+
+[33mcommit 25911defc2341928be388d71cb81b574ea42116f[m
+Author: lord-JesusChrist <obide1@yahoo.com>
+Date:   Fri Jun 3 16:21:11 2022 +0100
+
+    added base clases
