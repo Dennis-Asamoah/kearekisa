@@ -54,6 +54,7 @@ class ListCategories(APIView):
             serializer = CategorySerializer(self.categories, many=True)
             cache.set('list_all_categories', serializer.data, None)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 
         
