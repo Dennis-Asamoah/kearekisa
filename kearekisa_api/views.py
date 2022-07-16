@@ -37,23 +37,23 @@ class ListCategories(APIView):
         # categories = paginator.paginate_queryset(self.categories, request)
         # serializer = CategorySerializer(categories, many=True, context={'request': 12})
         # return paginator.get_paginated_response(serializer.data)
-        ## serializer = CategorySerializer(self.categories, many=True)
+        serializer = CategorySerializer(self.categories, many=True)
         # -- editing response headers
         # response = Response(serializer.data, status=status.HTTP_200_OK)
         # response['nanme'] = 'Dennis'
         # return response
-        ## return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
         #cache results 
-        if cache.get('list_all_categories') is not None:
-            print('yesss')
-            serializer_data = cache.get('list_all_categories')
-            return Response(serializer_data, status=status.HTTP_200_OK)
+        # if cache.get('list_all_categories') is not None:
+        #     print('yesss')
+        #     serializer_data = cache.get('list_all_categories')
+        #     return Response(serializer_data, status=status.HTTP_200_OK)
             
-        else:
-            serializer = CategorySerializer(self.categories, many=True)
-            cache.set('list_all_categories', serializer.data, None)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        # else:
+        #     serializer = CategorySerializer(self.categories, many=True)
+        #     cache.set('list_all_categories', serializer.data, None)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
         
