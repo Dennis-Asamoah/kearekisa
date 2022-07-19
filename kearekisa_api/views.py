@@ -29,7 +29,7 @@ class koo(PageNumberPagination):
 class ListCategories(APIView):
     # queryset = Category.objects.all()
     # serializer_class = CategorySerializer
-    categories = Category.objects.all()
+    categories = Category.objects.all()#('slug') #
     # pagination_class = PageNumberPagination
 
     def get(self, request, format=None):
@@ -37,29 +37,30 @@ class ListCategories(APIView):
         # categories = paginator.paginate_queryset(self.categories, request)
         # serializer = CategorySerializer(categories, many=True, context={'request': 12})
         # return paginator.get_paginated_response(serializer.data)
-        ## serializer = CategorySerializer(self.categories, many=True)
+        serializer = CategorySerializer(self.categories, many=True)
         # -- editing response headers
         # response = Response(serializer.data, status=status.HTTP_200_OK)
         # response['nanme'] = 'Dennis'
         # return response
-        ## return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+        # serializer = CategorySerializer.setup_eager_loading(Category.objects)
+        # serializer = CategorySerializer(serializer, many=True)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
 
         #cache results 
-        if cache.get('list_all_categories') is not None:
-            print('yesss')
-            serializer_data = cache.get('list_all_categories')
-            return Response(serializer_data, status=status.HTTP_200_OK)
+        # if cache.get('list_all_categories') is not None:
+        #     print('yesss')
+        #     serializer_data = cache.get('list_all_categories')
+        #     return Response(serializer_data, status=status.HTTP_200_OK)
             
-        else:
-            serializer = CategorySerializer(self.categories, many=True)
-            cache.set('list_all_categories', serializer.data, None)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        # else:
+        #     serializer = CategorySerializer(self.categories, many=True)
+        #     cache.set('list_all_categories', serializer.data, None)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
         
-
-
         
-       
-
 class ListCategoryProducts(APIView):
     # parser_classes = [MultiPartParser, FormParser]
 
@@ -89,8 +90,6 @@ class ListCategoryProducts(APIView):
         post_product(request, slug)
         return  Response('hi', status=status.HTTP_200_OK)
         
-
-
 
 class ListCategoriesAndItsSubcategories(APIView):
     def get(self, request):
@@ -124,7 +123,7 @@ class RetrieveSubCategoryProducts(APIView):
     other phone brands will all be listed without any filtering whatsoever
 
     """
-    category = {'Electronics': ElectronicSerializer, 'Pet': PetSerializer}
+    category = {'Electronics': ElectronicSerializer.setup_eager_loading, 'Pet': PetSerializer}
 
     def get(self, request, slug):
         print(request.GET)
@@ -137,7 +136,9 @@ class RetrieveSubCategoryProducts(APIView):
         # x = exec("electronic_model='S6'")
         # print (x)
         #  products = item[0]().filter(**request.data)
-        serializer = self.category[item[1]](products, many=True)
+       
+        serializer = self.category[item[1]](products)#, many=True)
+        serializer = ElectronicSerializer(serializer, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

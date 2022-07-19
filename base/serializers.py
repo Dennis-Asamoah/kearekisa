@@ -3,6 +3,24 @@ from rest_framework.serializers import Serializer
 from .models import *
 from app_image.serializers import *
 
+
+class EagerLoadingMixin:
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        """
+        This function allow dynamic addition of the related objects to
+        the provided query.
+        @parameter param1: queryset
+        """
+
+        if hasattr(cls, "select_related_fields"):
+            print(cls)
+            queryset = queryset.select_related(*cls.select_related_fields)
+        if hasattr(cls, "prefetch_related_fields"):
+            queryset = queryset.prefetch_related(*cls.prefetch_related_fields)
+        return queryset
+
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -13,8 +31,15 @@ class CategorySerializer(ModelSerializer):
     class Meta:
 
         model = Category
-        fields = '__all__'
-
+        # fields = '__all__'
+        exclude = ('slug',)
+    
+    @staticmethod
+    def setup_eager_loading(queryset):
+        print('dddd')
+        queryset = queryset.defer('slug')
+        return queryset
+        
 
 class  SubCategorySerializer(ModelSerializer):
     category = CategorySerializer(many=False, read_only=True)
@@ -22,6 +47,14 @@ class  SubCategorySerializer(ModelSerializer):
     class Meta:
         model = SubCategory
         fields = '__all__'
+    
+    # @staticmethod
+    # def setup_eager_loading(queryset):
+    #     queryset = queryset.select_related('category', )
+    #     # queryset = queryset.select_related('subcategory')
+    #     return queryset
+    
+
 
 
 class CategoryAndItsSubcategoriesSeriaizer(ModelSerializer):
@@ -87,19 +120,33 @@ class PropertySerializer(ModelSerializer):
         fields = '__all__'
 
 
-class ElectronicSerializer(ModelSerializer):
+class ElectronicSerializer(ModelSerializer): #, EagerLoadingMixin):
     electronic_image = ElectronicImageSerializer(many=True, read_only=True)
     # postered_by = UserSerializer(many=False)
-    category = SubCategorySerializer(many=False, read_only=True)
+    # subcategory = SubCategorySerializer(many=False, read_only=True)
+
+    select_related_fields = ('postered_by', ) #('subcategory', 'type', 'subregion', 'postered_by')
+    prefetch_related_fields = ('electronic_image', )  # Only necessary if you have fields to prefetch
 
     class Meta:
         model = Electronic
         fields = '__all__'
+        # exclude = ('subcategory', 'type')
         #  fields = ['id', 'name', 'electronic_image']
     
-    # def to_representation(self, instance):
-    #     self.fields['postered_by'] = UserSerializer()
-    #     return super(ElectronicSerializer, self).to_representation(instance)
+    def to_representation(self, instance):
+        self.fields['postered_by'] = UserSerializer()
+        self.fields['subcategory'] = SubCategorySerializer()
+        return super(ElectronicSerializer, self).to_representation(instance)
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.prefetch_related('electronic_image', )#, 'type', 'subregion',)
+        queryset = queryset.select_related('postered_by', 'subcategory')
+        
+        # queryset = queryset.select_related('subcategory').select_related('subcategory')
+        return queryset
+    
 
 
 class ClothingAndBeautySerializer(ModelSerializer):

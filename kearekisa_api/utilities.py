@@ -50,9 +50,11 @@ def product_type(slug):
 
 def  subcategory_product(slug):
     subcategory = SubCategory.objects.get(slug=slug)
+    # subcategory = SubCategory.objects.prefetch_related('electronic_set').get(slug=slug)
     category_name = subcategory.category.name
     if slug in electronic_subcategories:
         print(subcategory.name)
+        print(456666666666666666666)
         print(subcategory.type_set.all())
         return subcategory.electronic_set.all, category_name
     elif slug in property_subcategories:
