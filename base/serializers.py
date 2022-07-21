@@ -55,14 +55,17 @@ class  SubCategorySerializer(ModelSerializer):
     #     return queryset
     
 
-
-
 class CategoryAndItsSubcategoriesSeriaizer(ModelSerializer):
     subcategory = SubCategorySerializer(many=True, read_only=False)
 
     class Meta:
         model = Category
         fields = '__all__'
+    
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.prefetch_related('subcategory')
+        return queryset
 
 
 
@@ -71,6 +74,12 @@ class TypeSerializer(ModelSerializer):
 
         model = Type
         fields = '__all__'
+    
+    # @staticmethod
+    # def setup_eager_loading(queryset):
+    #     queryset = queryset.select_related('sub_category__category')
+    #     return queryset
+
 
 
 class RegionSerializer(ModelSerializer):
@@ -85,7 +94,11 @@ class SubRegionSerializer(ModelSerializer):
     class Meta:
         model = SubRegion
         fields = '__all__'
-
+    
+    # @staticmethod
+    # def setup_eager_loading(queryset):
+    #     queryset = queryset.select_related('region')
+    #     return queryset
 
 class RegionSerializer1(ModelSerializer):
     region = SubRegionSerializer(many=True, read_only=True)
@@ -138,12 +151,25 @@ class ElectronicSerializer(ModelSerializer): #, EagerLoadingMixin):
         self.fields['postered_by'] = UserSerializer()
         self.fields['subcategory'] = SubCategorySerializer()
         return super(ElectronicSerializer, self).to_representation(instance)
-
+    
+    # !ATTENTION: DO THIS FOR ALL ALL THE OTHER CATEGORIES
     @staticmethod
     def setup_eager_loading(queryset):
+        # queryset = queryset.prefetch_related('electronic_image', )#, 'type', 'subregion',)
+        # queryset = queryset.select_related('postered_by', )# 'subcategory')
+        # queryset = queryset.select_related('subcategory__category', )
+        queryset = queryset.select_related('subcategory__category', 'postered_by',)
         queryset = queryset.prefetch_related('electronic_image', )#, 'type', 'subregion',)
-        queryset = queryset.select_related('postered_by', 'subcategory')
         
+        # queryset = queryset.select_related('subcategory').select_related('subcategory')
+        return queryset
+    
+    # Use this method to do other quesries
+    @staticmethod
+    def setup_eager_loading1(queryset):
+        queryset = queryset.select_related('postered_by', 'subcategory__category')
+        queryset = queryset.prefetch_related('electronic_image', )#, 'type', 'subregion',)
+       
         # queryset = queryset.select_related('subcategory').select_related('subcategory')
         return queryset
     

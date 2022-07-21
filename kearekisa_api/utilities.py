@@ -40,22 +40,27 @@ ProductAndItsRelatedProducts = namedtuple('products_and_related_products', ['pro
 
 
 def product_type(slug):
-    item_type = Type.objects.get(slug=slug)
+    """
+    """
+    # item_type = Type.objects.get(slug=slug)
+    item_type = Type.objects.select_related('sub_category__category').get(slug=slug)
     type_name = item_type.sub_category.category.name
     print(type_name)
     if type_name == 'Pet':
         return item_type.pet_set.all,type_name
+        # return item_type.pet_set.select_related('subcategory__category').all, type_name
     elif type_name == 'Electronics':
         return item_type.electronic_set.all,type_name
+        # return item_type.electronic_set.select_related('subcategory__category').all, type_name
 
 def  subcategory_product(slug):
-    subcategory = SubCategory.objects.get(slug=slug)
+    subcategory = SubCategory.objects.select_related('category').get(slug=slug)
     # subcategory = SubCategory.objects.prefetch_related('electronic_set').get(slug=slug)
     category_name = subcategory.category.name
     if slug in electronic_subcategories:
-        print(subcategory.name)
-        print(456666666666666666666)
-        print(subcategory.type_set.all())
+        # print(subcategory.name)
+        # print(456666666666666666666)
+        # print(subcategory.type_set.all())
         return subcategory.electronic_set.all, category_name
     elif slug in property_subcategories:
         return subcategory.property_set.all, category_name
@@ -78,29 +83,38 @@ def category_products(slug):
     # do not forget to do it for the rest of the categories 
 
 def category_product_and_sub(slug):
-    category = Category.objects.get(slug=slug)
+    category = Category.objects.prefetch_related('subcategory').get(slug=slug)
     category_name = category.name
     if category_name == 'Electronics':
-        return Electronic.objects.all(), category.subcategory.all(), category_name
+        # return Electronic.objects.all(), category.subcategory.all(), category_name
+        return Electronic.objects.select_related('subcategory__category', 'postered_by')\
+            .prefetch_related('electronic_image'),\
+               category.subcategory.all(), category_name
     elif category_name == 'Pet':
         return Pet.objects.all(), category.subcategory.all(), category_name
-    # do not forget to do it for the rest of the categories 
+    # do not forget to do it for the rest of the categories
 
 def subcategory_product_and_types(slug):
-    subcategory = SubCategory.objects.get(slug=slug)
+    # subcategory = SubCategory.objects.get(slug=slug)
+    subcategory = SubCategory.objects.select_related('category').get(slug=slug)
     if slug in electronic_subcategories:
-        return subcategory.electronic_set.all(), subcategory.type_set.all(), subcategory.category.name
+        # TODO: Repeat for the rest of the other categories or subcategories
+        return subcategory.electronic_set.all().select_related('postered_by').prefetch_related('electronic_image'),\
+             subcategory.type_set.all(), subcategory.category.name
     elif slug in pet_subcategories:
         return subcategory.pet_set.all(), subcategory.type_set.all(), subcategory.category.name
 
     # do not forget to do it for the rest of the categories
 
 def product_and_related_prouducts(category_slug, product_slug):
+    # category = Category.objects.get(slug=category_slug)
     category = Category.objects.get(slug=category_slug)
     category_name = category.name
     if category.name == 'Electronics':
-        product = Electronic.objects.get(slug=product_slug)
-        related_products  =Electronic.objects.exclude(slug=product_slug)
+        product = Electronic.objects.select_related('postered_by', 'subcategory__category')\
+            .prefetch_related('electronic_image').get(slug=product_slug)
+        related_products = Electronic.objects.select_related('postered_by', 'subcategory__category')\
+            .prefetch_related('electronic_image').exclude(slug=product_slug)
         return product, related_products, category_name 
     elif category.name == 'Pets':
         product = Pet.objects.get(slug=product_slug)
