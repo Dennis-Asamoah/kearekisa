@@ -32,14 +32,22 @@ class CategorySerializer(ModelSerializer):
 
         model = Category
         # fields = '__all__'
-        exclude = ('slug',)
+        # exclude = ('slug', 'id')
+        exclude = ('id', )
     
     @staticmethod
     def setup_eager_loading(queryset):
         print('dddd')
-        queryset = queryset.defer('slug')
+        queryset = queryset.defer('slug', 'id')
         return queryset
+
+    # def save(self):
+    #     print(self.context)
+    #     x = self.context['request']
+    #     print('************************')
+    #     print(x)
         
+    
 
 class  SubCategorySerializer(ModelSerializer):
     category = CategorySerializer(many=False, read_only=True)
@@ -66,8 +74,7 @@ class CategoryAndItsSubcategoriesSeriaizer(ModelSerializer):
     def setup_eager_loading(queryset):
         queryset = queryset.prefetch_related('subcategory')
         return queryset
-
-
+    
 
 class TypeSerializer(ModelSerializer):
     class Meta:
@@ -138,14 +145,14 @@ class ElectronicSerializer(ModelSerializer): #, EagerLoadingMixin):
     # postered_by = UserSerializer(many=False)
     # subcategory = SubCategorySerializer(many=False, read_only=True)
 
-    select_related_fields = ('postered_by', ) #('subcategory', 'type', 'subregion', 'postered_by')
-    prefetch_related_fields = ('electronic_image', )  # Only necessary if you have fields to prefetch
+    # select_related_fields = ('postered_by', ) #('subcategory', 'type', 'subregion', 'postered_by')
+    # prefetch_related_fields = ('electronic_image', )  # Only necessary if you have fields to prefetch
 
     class Meta:
         model = Electronic
         fields = '__all__'
         # exclude = ('subcategory', 'type')
-        #  fields = ['id', 'name', 'electronic_image']
+        # fields = ['id', 'name', 'electronic_image']
     
     def to_representation(self, instance):
         self.fields['postered_by'] = UserSerializer()

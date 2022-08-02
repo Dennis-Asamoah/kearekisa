@@ -6,7 +6,6 @@ from base.serializers import *
 from app_image.models import *
 
 
-
 electronic_subcategories = [
     'cell-phones-and-tablets',
     'tv-and-visuals',
@@ -125,14 +124,18 @@ def product_and_related_prouducts(category_slug, product_slug):
 # This function is responsible for publishin new items.
 def post_product(request, slug):
     data = request.POST
-    images = request.FILES.getlist('images')
-    print(images)
+    print(data)
+    images = request.FILES.getlist('image')
+    combined_image_names = '-'.join([i.name for i in images ])
+    # print(combined_image_names)
+    # print(images)
     category = Category.objects.get(slug=slug)
     category_name = category.name
     if category.name == 'Electronics':
         # let save the data in the serialiser
         serializer = ElectronicSerializer(data=data)
         if serializer.is_valid():
+            # serializer.save(image_urls=combined_image_names)
             serializer.save()
             # get obect with name,description and price
             # replace with uuid which is more secure 
@@ -150,16 +153,6 @@ def post_product(request, slug):
         else:
             # Do something here 
             print(serializer.errors)
-
-
-
-
-
-
-
-
-
-
 
 
 

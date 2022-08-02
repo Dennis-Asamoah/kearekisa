@@ -37,6 +37,9 @@ class Category(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
+        print(123333)
+        print(self.id)
+        print(self.name)
         if not self.slug:
             self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
@@ -114,6 +117,7 @@ class Product(models.Model):
     #  location = models.CharField(max_length=500, null=True, blank=True)  # extra for vehicles
     subregion = models.ForeignKey(SubRegion, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=500, unique=True, null=True, blank=True)
+    image_urls = models.CharField(max_length=700, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -126,7 +130,6 @@ class Product(models.Model):
             self.slug = slugify(self.name)
         super(Product, self).save(*args, **kwargs)
             
-
 
 class Vehicle(Product):
     #  properties related to the Vehicle
