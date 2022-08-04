@@ -1,6 +1,8 @@
 # from base.models import Category, Electronic, Type
 # from base.models import SubCategory
 from collections import namedtuple
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from base.models import *
 from base.serializers import *
 from app_image.models import *
@@ -160,6 +162,10 @@ def post_product(request, slug):
 #     category = Category.objects.get(slug=category_slug)
 #     category_name = category.name
 #     product = category.
+class PaginateProducts(PageNumberPagination):
+    page_size = 2
 
+    def get_paginated_response(self, data):
+        pass
 
 

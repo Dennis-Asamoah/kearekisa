@@ -25,7 +25,6 @@ class koo(PageNumberPagination):
     #     return response
 
 
-
 class ListCategories(APIView):
     """
        This endpoint lists all the different categories.The categories are 

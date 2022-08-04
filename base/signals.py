@@ -196,17 +196,19 @@ def update_cache_for_list_subcategories_products_view(sender, instance, **kwargs
     slug2 = instance.type.slug
     slug3 = instance.subcategory.category.slug
     # print(slug2.type_name, slug2.slug, slug2.sub_category.name)
+    cache_name0 = 'list_of_electronics_products'
     cache_name = 'list_' + slug + '_products'
     cache_name2 = 'retrieve_'+'type_'+ slug2
     cache_name3 = 'list_' + slug + '_products_and_types'
     cache_name4 = 'list_' + slug3 + '_products_and_its_subcategories'
     # print(cache_name2)
     # data = cache.get(cache_name)
-    data = cache.get_many([cache_name, cache_name2, cache_name3, cache_name4])
+    data = cache.get_many([cache_name0, cache_name, cache_name2, cache_name3, cache_name4])
     # print(make_od)
     # print(data[cache_name])
     # print('*********************************')
     # print(data[cache_name2])
+    data0 = data[cache_name0]
     data1 = data[cache_name]
     data2 = data[cache_name2]
     data3 = data[cache_name3]  # a dictionary is produced 
@@ -215,9 +217,10 @@ def update_cache_for_list_subcategories_products_view(sender, instance, **kwargs
     data4_a = data4['category_product']
     # print(data3['category_product'])
     print(data4)
-    ## data1.append(make_od)
-    ## data2.append(make_od)
-    # data3_a.append(make_od)
+    data0.append(make_od)
+    data1.append(make_od)
+    data2.append(make_od)
+    data3_a.append(make_od)
     data4_a.append(make_od)
     print('********')
     ## print(data1)
@@ -232,7 +235,7 @@ def update_cache_for_list_subcategories_products_view(sender, instance, **kwargs
     # #print(45)
     # #print(data)
     # #cache.set(cache_name, data, None)
-    cache.set_many({cache_name: data1, cache_name2: data2, cache_name3: data3, cache_name4: data4}, None)
+    cache.set_many({cache_name0: data0, cache_name: data1, cache_name2: data2, cache_name3: data3, cache_name4: data4}, None)
     raise (20)
 # NB: DO SAME THING FOR THE REST OF THE CATEGORIES
  
