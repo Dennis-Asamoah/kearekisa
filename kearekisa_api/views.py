@@ -37,8 +37,10 @@ class ListCategories(APIView):
     """
     # queryset = Category.objects.all()
     # serializer_class = CategorySerializer
-    categories = Category.objects.all()#('slug') #
+    categories = Category.objects.all()  # .order_by('-id')#('slug') #
+    count = categories.count()
     # pagination_class = PageNumberPagination
+    pagination_class = PaginateProducts()
 
     def get(self, request, format=None):
         # paginator = koo()
@@ -76,6 +78,60 @@ class ListCategories(APIView):
             serializer = CategorySerializer(self.categories, many=True)
             cache.set('list_all_categories', serializer.data, None)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # print(type(request.GET.get('page')))
+        # paginated_queryset = self.pagination_class.paginate_queryset(self.categories, request)
+        # serializer = CategorySerializer(paginated_queryset, many=True)
+        # print(serializer.data)
+        # paginated_serializer_data = self.pagination_class.get_paginated_response(serializer.data)
+        # return  paginated_serializer_data
+
+        # get_page_num = request.GET.get('page')
+        # page_num = '' if not get_page_num or get_page_num=='1' else get_page_num
+        # if not page_num:
+        #     cache_category_name = 'list_all_categories'
+        #     num = 1
+        # else:    
+        #     num =  int(page_num)
+        #     cache_category_name = 'list_all_categories' + page_num  # 'list_all_categories_page' + page_num 
+        # print(cache_category_name)
+        # cached_data = cache.get(cache_category_name)
+        # if cached_data:
+        #     print('here')
+        #     print(cached_data)
+        #     res = Response(cached_data)
+
+        #     if num>1 and num<=(self.count//2):           
+        #         next = num + 1
+        #         if next > (self.count//2):
+        #             res['next'] = None
+        #         else:
+        #             res['next'] = request.build_absolute_uri('?page={}'.format(next))
+
+        #         prev =  num - 1  
+        #         request.build_absolute_uri('?page={}'.format(page_num))
+        #         res['count'] = self.count
+               
+        #         res['previous'] = request.build_absolute_uri('?page={}'.format(prev))
+        #         # else:
+        #         return res
+        #     else:
+        #         next = num + 1
+        #         res['next'] = request.build_absolute_uri('?page={}'.format(next))
+        #         res['previous'] = None
+        #         return res
+
+
+        # else:
+        #     # print(type(request.GET.get('page')))
+        #     paginated_queryset = self.pagination_class.paginate_queryset(self.categories, request)
+        #     serializer = CategorySerializer(paginated_queryset, many=True)
+        #     serializer_data = serializer.data
+        #     print (serializer.data)
+        #     cache.set(cache_category_name, serializer_data, None)
+        #     return  self.pagination_class.get_paginated_response(serializer_data)
+
+
     
     # def post(self,request):
     #     zz = request.FILES.get('image')

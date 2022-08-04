@@ -9,8 +9,6 @@ from .options_classes.options_list.job_option_lists import *
 from .options_classes.options_list.pet_options_list import *
 
 
-
-
 # class VehicleModel:
 #     def __init__(self,model, fuel_type):
 #         self.model = model
