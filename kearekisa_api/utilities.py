@@ -3,6 +3,7 @@
 from collections import namedtuple
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.core.cache import cache
 from base.models import *
 from base.serializers import *
 from app_image.models import *
@@ -172,5 +173,42 @@ class PaginateProducts(PageNumberPagination):
     #     response['previous'] = self.get_previous_link()
     #     return response
 
+def process_cache(request, cached_data, num, count):
+    # page_num = '' if not get_page_num or get_page_num=='1' else get_page_num
+    # if not page_num:
+    #     cache_category_name = cache_name  # 'list_all_categories'
+    #     num = 1
+    # else:    
+    #     num =  int(page_num)
+    #     cache_category_name = 'list_all_categories' + page_num  # 'list_all_categories_page' + page_num 
+    # print(cache_category_name)
+    # cached_data = cache.get(cache_category_name)
+    # if cached_data:
+    #     print('here')
+    #     print(cached_data)
+    res = Response(cached_data)
+    count1 = count if count%2==0 else count+1  # when product list are odd in size add 1 to it so that 
+    # get last product . 
+
+    if num>1 and num<=(count1//2):  # 2 only represents no of products shown on each paginated page.       
+        next = num + 1
+        if next > (count1//2):
+            res['next'] = None
+        else:
+            res['next'] = request.build_absolute_uri('?page={}'.format(next))
+
+        prev =  num - 1  
+        request.build_absolute_uri('?page={}'.format(str(num)))
+        res['count'] = count
+        
+        res['previous'] = request.build_absolute_uri('?page={}'.format(prev))
+        # else:
+        return res
+    else:
+        res['count'] = count
+        next = num + 1
+        res['next'] = request.build_absolute_uri('?page={}'.format(next))
+        res['previous'] = None
+        return res
 
 

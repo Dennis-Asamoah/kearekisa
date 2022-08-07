@@ -10,6 +10,8 @@ from base.models import *
 from base.serializers import *
 from .utilities import *
 
+COUNT = 0
+
 # Serializer Pagina 
 class koo(PageNumberPagination):
     page_size = 2
@@ -93,35 +95,10 @@ class ListCategories(APIView):
         #     num = 1
         # else:    
         #     num =  int(page_num)
-        #     cache_category_name = 'list_all_categories' + page_num  # 'list_all_categories_page' + page_num 
-        # print(cache_category_name)
+        #     cache_category_name = 'list_all_categories' + page_num 
         # cached_data = cache.get(cache_category_name)
         # if cached_data:
-        #     print('here')
-        #     print(cached_data)
-        #     res = Response(cached_data)
-
-        #     if num>1 and num<=(self.count//2):           
-        #         next = num + 1
-        #         if next > (self.count//2):
-        #             res['next'] = None
-        #         else:
-        #             res['next'] = request.build_absolute_uri('?page={}'.format(next))
-
-        #         prev =  num - 1  
-        #         request.build_absolute_uri('?page={}'.format(page_num))
-        #         res['count'] = self.count
-               
-        #         res['previous'] = request.build_absolute_uri('?page={}'.format(prev))
-        #         # else:
-        #         return res
-        #     else:
-        #         next = num + 1
-        #         res['next'] = request.build_absolute_uri('?page={}'.format(next))
-        #         res['previous'] = None
-        #         return res
-
-
+        #    return  process_cache(request, cached_data, num, self.count)
         # else:
         #     # print(type(request.GET.get('page')))
         #     paginated_queryset = self.pagination_class.paginate_queryset(self.categories, request)
@@ -146,7 +123,7 @@ class ListCategories(APIView):
     #     return  Response(json.dumps('cool'))
         
         
-class ListCategoryProducts(APIView):
+class ListCategoryProducts(APIView, PaginateProducts):
     """
        This endpoint lists all the products under a category irrespective of its subcategory of type.
        In order words 'We fetch all products that is found in  a particular category'.
@@ -163,6 +140,8 @@ class ListCategoryProducts(APIView):
         }
     parser_classes = [MultiPartParser, FormParser]
 
+    # count = count
+
     def get(self, request, slug):
         # category_object = category_products(slug)
         # category = category_object[0]()
@@ -173,27 +152,91 @@ class ListCategoryProducts(APIView):
         # # optimized query with select_related and prefetch_related 
         # # Todo1: use model.objects.x  x=(defer,only) o optimize more
         # # Todo2: manipulate the slug to cache effectively all the 6 or more categoies 
+        # # print(category_object[2])
         # category = self.category_serializers[category_object[1]].setup_eager_loading(category)
         # serializer = self.category_serializers[category_object[1]](category, many=True)
-        # # print(serializer)
+        # # print(len(serializer.data))
         # return Response(serializer.data, status=status.HTTP_200_OK)
 
+        # cached_category_name = 'list_of_'+slug+'_products'
+        # product_json = cache.get(cached_category_name)
+        # if product_json:
+        #     print(product_json[0])
+        #     return Response(product_json)
+        # else:
+        #     category_object = category_products(slug)
+        #     category = category_object[0]()
+        #     category = self.category_serializers[category_object[1]].setup_eager_loading(category)
+        #     # print(category)  # bizzarely makes db  network request. AVOID IT.Increases
+        #     # quesry from 3 to 5 
+        #     serializer = self.category_serializers[category_object[1]](category, many=True)
+        #     serializer_data = serializer.data
+        #     cache.set(cached_category_name, serializer_data, None)
+        #     return Response(serializer_data)
+        
+        
+        # global COUNT
+        # get_page_num = request.GET.get('page')
+        # page_num = '' if not get_page_num or get_page_num=='1' else get_page_num
+        # if not page_num:
+        #     cache_category_name = 'list_of_' + slug + '_products'
+        #     num = 1
+        # else:    
+        #     num =  int(page_num)
+        #     cache_category_name = 'list_of_' + slug + '_products' + page_num 
 
+        # cached_data = cache.get(cache_category_name)
+        # if cached_data:
+        #    return  process_cache(request, cached_data, num, COUNT)
+        # else:
+        #     # print(type(request.GET.get('page')))
+        #     category_object = category_products(slug)
+        #     category = category_object[0]()
+        #     # print(category)
+        #     # print(len(category))
+        #     # COUNT = len(category)
+        #     category = self.category_serializers[category_object[1]].setup_eager_loading(category)
+           
+        #     # category = self.paginate_queryset(category, request)
+        #     serializer = self.category_serializers[category_object[1]](category, many=True)
+        #     serializer_data = serializer.data
+        #     # print(serializer_data)
+        #     paginated_data = self.paginate_queryset(serializer_data, request)
+        #     print(paginated_data)
+        #     # cache.set(cache_category_name, serializer_data, None)
+        #     cache.set(cache_category_name, paginated_data, None)
+        #     # return  Response(serializer_data)
+        #     return  Response(paginated_data)
+        
+        # global COUNT
+        get_page_num = request.GET.get('page')
+        if not get_page_num or get_page_num=='1':
+            num = 1
+        else:    
+            num =  int(get_page_num)
+    
         cached_category_name = 'list_of_'+slug+'_products'
-        product_json = cache.get(cached_category_name)
-        if product_json:
-            print(product_json[0])
-            return Response(product_json)
+        cached_data = cache.get(cached_category_name)
+        if cached_data:
+            print(cached_data)
+            paginated_data = self.paginate_queryset(cached_data, request)
+            # return Response(serializer_data)
+            return process_cache(request, paginated_data, num, len(cached_data))
+            # return Response(product_json)
         else:
             category_object = category_products(slug)
             category = category_object[0]()
             category = self.category_serializers[category_object[1]].setup_eager_loading(category)
+            # print(category)  # bizzarely makes db  network request. AVOID IT.Increases
+            # quesry from 3 to 5 
             serializer = self.category_serializers[category_object[1]](category, many=True)
             serializer_data = serializer.data
             cache.set(cached_category_name, serializer_data, None)
-            return Response(serializer_data)
-    
-    
+            paginated_data = self.paginate_queryset(serializer_data, request)
+            # return Response(serializer_data)
+            return process_cache(request, paginated_data, num, len(serializer_data))
+        
+  
     # request.POST must contain category,subcategory,name
     def post(self, request, slug):
         # data = request.data
@@ -241,8 +284,6 @@ class ListCategoriesAndItsSubcategories(APIView):
         # IF ITEMS ARE CHANGED (CATEGORIES AND ITS SUNBATEGORIES) ARE MODIFIED BY THE ADMIN,
         # IT WON'T REFLECT ON THE CACHE. UNLESS YOU WARM THE CACHE DB with a
         # THE MODIFIES. 
-
-
 
         
 class RetrieveSubcategoriesOfCategory(APIView):
@@ -306,7 +347,7 @@ class RetrieveTypesOfSubCategory(APIView):
 
         
 # lists all the products of a subcategory without filtering
-class ListSubCategoryProducts(APIView):
+class ListSubCategoryProducts(APIView, PaginateProducts):
     """ 
     This endpoint is used to list all  the products under a subcategory.
     eg if a subcategory  is  'cell-phones-and-tablets', then all products under
@@ -332,25 +373,52 @@ class ListSubCategoryProducts(APIView):
         # serializer = self.category[item[1]](serializer, many=True)
         # return Response(serializer.data, status=status.HTTP_200_OK)
 
-        cache_name = 'list_'+slug+'_products'
-        cached_data = cache.get(cache_name)
+        # cache_name = 'list_'+slug+'_products'
+        # cached_data = cache.get(cache_name)
+        # if cached_data:
+        #     return Response(cached_data, status=status.HTTP_200_OK)
+        # else:
+        #     item = subcategory_product(slug)
+        #     products = item[0]() #  .filter(electronic_model="S6")
+        #     serializer = self.category[item[1]].setup_eager_loading(products)#, many=True)
+        #     serializer = self.category[item[1]](serializer, many=True)
+        #     serializer_data = serializer.data
+        #     cache.set(cache_name, serializer_data, None)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        
+        get_page_num = request.GET.get('page')
+        if not get_page_num or get_page_num=='1':
+            num = 1
+        else:    
+            num =  int(get_page_num)
+    
+        cached_category_name = 'list_'+slug+'_products'
+        cached_data = cache.get(cached_category_name)
         if cached_data:
-            return Response(cached_data, status=status.HTTP_200_OK)
+            print(cached_data)
+            print(len(cached_data))
+            paginated_data = self.paginate_queryset(cached_data, request)
+            # return Response(serializer_data)
+            return process_cache(request, paginated_data, num, len(cached_data))
+            # return Response(product_json)
         else:
             item = subcategory_product(slug)
             products = item[0]() #  .filter(electronic_model="S6")
             serializer = self.category[item[1]].setup_eager_loading(products)#, many=True)
             serializer = self.category[item[1]](serializer, many=True)
             serializer_data = serializer.data
-            cache.set(cache_name, serializer_data, None)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            cache.set(cached_category_name, serializer_data, None)
+            paginated_data = self.paginate_queryset(serializer_data, request)
+            # return Response(serializer_data)
+            return process_cache(request, paginated_data, num, len(serializer_data))
         
         # TODO: Must update cache when item is added. You may check product_category, product_subcategory
         # and product_type to update the cache or you may end up with stale data. You can also delte 
         # a key accordingly , but this can cause a cache stampede if a lot of requests appear at the same time. 
 
 
-class FilterProducts(APIView):
+class FilterProducts(APIView, PaginateProducts):
     """
         This class is the  similar to  the RetreiveSubcategoryProducts class
         with the exception that using the post method , we get the attributes  which
@@ -367,9 +435,9 @@ class FilterProducts(APIView):
     category = {'Electronics': ElectronicSerializer, 'Pet': PetSerializer}
     # the get method is used for manual testing purposes
     def get(self, request, slug):
-        x = request.GET
-        print(x)
-        return Response(json.dumps('kio'), status=status.HTTP_200_OK)
+        # x = request.query_params
+        # # print(x)
+        # return Response(json.dumps('kio'), status=status.HTTP_200_OK)
         # data_for_filtering = request.data
         # item = subcategory_product(slug)
         # products = item[0]().filter(**{"name": "Samsung galaxy S6"})
@@ -378,6 +446,29 @@ class FilterProducts(APIView):
         # products =  self.category[item[1]].setup_eager_loading(products)
         # serializer = self.category[item[1]](products, many=True)
         # return Response(serializer.data, status=status.HTTP_200_OK)
+
+        get_page_num = request.GET.get('page')
+        if not get_page_num or get_page_num=='1':
+            num = 1
+            if get_page_num:
+                data_for_filtering = request.query_params.dict().pop('page')
+            else: 
+                data_for_filtering = request.query_params.dict()
+
+        else:    
+            num =  int(get_page_num)
+            data_for_filtering = request.query_params.dict().pop('page')
+
+        # data_for_filtering = request.query_params.dict()
+        item = subcategory_product(slug)
+        products = item[0]().filter(**data_for_filtering)
+        # optimizes the query. Reduces number of ntework trips from or sql queries 
+        # frim 23 to only 4.
+        products =  self.category[item[1]].setup_eager_loading(products)
+        serializer = self.category[item[1]](products, many=True)    
+        serializer_data = serializer.data
+        paginated_data = self.paginate_queryset(serializer_data, request)
+        return process_cache(request, paginated_data, num, len(serializer_data))
 
     def post(self, request, slug):
         data_for_filtering = request.data
@@ -388,6 +479,7 @@ class FilterProducts(APIView):
         products =  self.category[item[1]].setup_eager_loading(products)
         serializer = self.category[item[1]](products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
         
         # No need to cache the filtering as there are way too many ways to filter 
         # products
@@ -544,7 +636,7 @@ class ListCategoryProductsAndSubcategory(APIView):
         # NB: DO NOT FORGET TO UPDATE CACHE IF A PRODUCT IS ADDED TO THE CATEGORY 
 
 
-class ListSubCategoryProductsAndTypes(APIView):
+class ListSubCategoryProductsAndTypes(APIView, PaginateProducts):
     """
         This endpoints lists all the products in a  particular subcategory  together with
         the types associated with this subcategory:
@@ -574,23 +666,51 @@ class ListSubCategoryProductsAndTypes(APIView):
         # serializer = self.categories[category_name](data)
         # return  Response(serializer.data, status=status.HTTP_200_OK)
 
-        cache_name = 'list_'+slug+'_products_and_types'
-        cached_data = cache.get(cache_name)
+        # cache_name = 'list_'+slug+'_products_and_types'
+        # cached_data = cache.get(cache_name)
+        # if cached_data:
+        #     return Response(cached_data, status=status.HTTP_200_OK)
+        # else:
+        #     subcategory_product, product_type, category_name = subcategory_product_and_types(slug)
+        #     data = CategoryProductsAndSub(category_product=subcategory_product, subcategory=None, type=product_type)
+        #     serializer = self.categories[category_name](data)
+        #     serializer_data = serializer.data
+        #     cache.set(cache_name, serializer_data, None)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        get_page_num = request.GET.get('page')
+        if not get_page_num or get_page_num=='1':
+            num = 1
+        else:    
+            num =  int(get_page_num)
+    
+        cached_category_name = 'list_' + slug + '_products_and_types'
+        cached_data = cache.get(cached_category_name)
         if cached_data:
-            return Response(cached_data, status=status.HTTP_200_OK)
+            print(cached_data)
+            data = cached_data['category_product']
+            paginated_data = self.paginate_queryset(data, request)
+            cached_data['category_product'] = paginated_data
+            return process_cache(request, cached_data, num, len(data))
         else:
             subcategory_product, product_type, category_name = subcategory_product_and_types(slug)
             data = CategoryProductsAndSub(category_product=subcategory_product, subcategory=None, type=product_type)
             serializer = self.categories[category_name](data)
             serializer_data = serializer.data
-            cache.set(cache_name, serializer_data, None)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
+            cache.set(cached_category_name, serializer_data, None)
+            data = serializer_data['category_product']
+            paginated_data = self.paginate_queryset(data, request)
+            serializer_data['category_product'] = paginated_data
+            return process_cache(request, serializer_data, num, len(data))
+            # paginated_data = self.paginate_queryset(serializer_data, request)
+            # return process_cache(request, paginated_data, num, len(serializer_data))
+
+
         # # NB: DO NOT FORGET TO UPDATE CACHE IF A PRODUCT  OR TYPE IS UNDER THIS SUBCATEGORY IS ADDED
         # # IE UPDATE CACHE ID TYPE OR PRODUCT IS CHANGED 
 
 
-class RetrieveProduct(APIView):
+class RetrieveProduct(APIView,  PaginateProducts):
     """
         This endpoint list the details of a particular product together with similar products 
         associated with this particular product. 
@@ -621,5 +741,32 @@ class RetrieveProduct(APIView):
             serializer_data = serializer.data
             cache.set(cache_name, serializer.data, 300) # 60*5=300 TTL
             return Response(serializer_data, status=status.HTTP_200_OK)
+        
+        # get_page_num = request.GET.get('page')
+        # if not get_page_num or get_page_num=='1':
+        #     num = 1
+        # else:    
+        #     num =  int(get_page_num)
+    
+        # cached_category_name = category_slug  + '_' + subcategory_slug + '_' + product_slug
+        # cached_data = cache.get(cached_category_name)
+        # if cached_data:
+        #     print(cached_data)
+        #     data = cached_data['category_product']
+        #     paginated_data = self.paginate_queryset(data, request)
+        #     cached_data['category_product'] = paginated_data
+        #     return process_cache(request, cached_data, num, len(data))
+        # else:
+        #     product, related_products, product_name = product_and_related_prouducts(category_slug, product_slug)
+        #     combined_data = ProductAndItsRelatedProducts(product=product, related_products=related_products)
+        #     serializer = self.serializers[product_name](combined_data)
+        #     serializer_data = serializer.data
+        #     cache.set(cached_category_name, serializer_data, None)
+        #     data = serializer_data['category_product']
+        #     paginated_data = self.paginate_queryset(data, request)
+        #     serializer_data['category_product'] = paginated_data
+        #     return process_cache(request, serializer_data, num, len(data))
+        #     # paginated_data = self.paginate_queryset(serializer_data, request)
+        #     # return process_cache(request, paginated_data, num, len(serializer_data))
 
 

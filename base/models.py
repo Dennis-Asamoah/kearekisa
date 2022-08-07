@@ -119,6 +119,7 @@ class Product(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
