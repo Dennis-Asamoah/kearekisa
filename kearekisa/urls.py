@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 import debug_toolbar
 
 urlpatterns = [
+    path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
     path('admin/', admin.site.urls),
     path('', include('base.urls')),
     path('api/v1/', include('kearekisa_api.urls')),

@@ -5,6 +5,7 @@ from rest_framework import  generics
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.cache import cache 
 from base.models import * 
 from base.serializers import *
@@ -43,6 +44,8 @@ class ListCategories(APIView):
     count = categories.count()
     # pagination_class = PageNumberPagination
     pagination_class = PaginateProducts()
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         # paginator = koo()
@@ -468,7 +471,7 @@ class FilterProducts(APIView, PaginateProducts):
         serializer = self.category[item[1]](products, many=True)    
         serializer_data = serializer.data
         paginated_data = self.paginate_queryset(serializer_data, request)
-        return process_cache(request, paginated_data, num, len(serializer_data))
+        return process_cache1(request, paginated_data, num, len(serializer_data))
 
     def post(self, request, slug):
         data_for_filtering = request.data

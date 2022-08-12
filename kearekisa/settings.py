@@ -50,10 +50,13 @@ INSTALLED_APPS = [
     'app_image',
     'kearekisa_api',
     'debug_toolbar',
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,6 +79,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -150,9 +155,59 @@ if DEBUG:
     mimetypes.add_type("application/javascript", ".js", True)
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 2
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    (  
+    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    'drf_social_oauth2.authentication.SocialAuthentication',
+    ),
 }
+
+# AUTHENTICATION_BACKENDS = (
+#    'drf_social_oauth2.backends.DjangoOAuth2',
+#    'django.contrib.auth.backends.ModelBackend',
+# )
+
+AUTHENTICATION_BACKENDS = (
+    # Others auth providers (e.g. Google, OpenId, etc)
+
+    # Facebook OAuth2
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+
+    # drf_social_oauth2
+    'drf_social_oauth2.backends.DjangoOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Facebook configuration
+SOCIAL_AUTH_FACEBOOK_KEY = '7835*************'
+SOCIAL_AUTH_FACEBOOK_SECRET = '158f45ff5**********85e0e1778'
+
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
+# Email is not sent by default, to get it, you must request the email permission.
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
+}
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '432***85101-r6el06mh**********71qordlo6.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOCSPX-cY2Phe2u3LGC*******OtPSqhOMs'
+
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
 
 CACHES = {
     'default': {
@@ -164,3 +219,9 @@ CACHES = {
     }
 }
 
+# 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 #client_secret
+#432064585101-r6el06mhnd0vktt8co0iul571qordlo6.apps.googleusercontent.com #client_id
+
+#facebook accessToken
+#vEP5oZicMme74mJV807ornbeZBu6y9j3JH1mIf02K58PGMZuNJ
+# Q9cuPpRzyd1bQmc2S9bMukUuwtTo9pedxBMVgaLsqCRUQDbuzwOfvUwf2o9V684QE0AaZ64kmAfL0e
