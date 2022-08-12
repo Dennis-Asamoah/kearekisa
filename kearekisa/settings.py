@@ -219,9 +219,3 @@ CACHES = {
     }
 }
 
-# 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 #client_secret
-#432064585101-r6el06mhnd0vktt8co0iul571qordlo6.apps.googleusercontent.com #client_id
-
-#facebook accessToken
-#vEP5oZicMme74mJV807ornbeZBu6y9j3JH1mIf02K58PGMZuNJ
-# Q9cuPpRzyd1bQmc2S9bMukUuwtTo9pedxBMVgaLsqCRUQDbuzwOfvUwf2o9V684QE0AaZ64kmAfL0e
