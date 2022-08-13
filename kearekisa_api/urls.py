@@ -64,5 +64,8 @@ urlpatterns = [
     path('<slug:category_slug>/<slug:subcategory_slug>/<slug:product_slug>',
      views.RetrieveProduct.as_view(), name='product'),
     path('regions1/<slug:slug>', views.Test.as_view(), name='test'),
+    path('produce/', views.CeleryProducer.as_view(), name='producer'),
+    path('consume/<str:id>', views.CeleryConsumer.as_view(), name='consumer'),
+
 
 ]

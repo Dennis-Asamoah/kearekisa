@@ -7,9 +7,11 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.cache import cache 
+from celery import current_app
 from base.models import * 
 from base.serializers import *
 from .utilities import *
+from .tasks import *
 
 COUNT = 0
 
@@ -773,3 +775,17 @@ class RetrieveProduct(APIView,  PaginateProducts):
         #     # return process_cache(request, paginated_data, num, len(serializer_data))
 
 
+class CeleryProducer(APIView):
+    def get(self, request):
+        a = long_task.delay(12)
+        print(a.id, a.status)
+        return Response(json.dumps(a.id))
+
+
+class CeleryConsumer(APIView):
+    def get(self, request, id):
+        task = current_app.AsyncResult(id)
+        if task.status == 'SUCCESS':
+            return Response(json.dumps(task.get()))
+        else:
+            return  Response(json.dumps(task.status))
