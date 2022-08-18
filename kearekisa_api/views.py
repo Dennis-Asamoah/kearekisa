@@ -45,9 +45,9 @@ class ListCategories(APIView):
     categories = Category.objects.all()  # .order_by('-id')#('slug') #
     count = categories.count()
     # pagination_class = PageNumberPagination
-    pagination_class = PaginateProducts()
-    # permission_classes = [AllowAny]
-    permission_classes = [IsAuthenticated]
+    pagination_class = PaginateProducts
+    permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         # paginator = koo()

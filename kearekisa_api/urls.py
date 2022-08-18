@@ -67,5 +67,4 @@ urlpatterns = [
     path('produce/', views.CeleryProducer.as_view(), name='producer'),
     path('consume/<str:id>', views.CeleryConsumer.as_view(), name='consumer'),
 
-
 ]

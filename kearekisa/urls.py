@@ -18,6 +18,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 import debug_toolbar
+from rest_framework.documentation import include_docs_urls
+from rest_framework.schemas import get_schema_view
+
+
 
 urlpatterns = [
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
@@ -25,6 +29,12 @@ urlpatterns = [
     path('', include('base.urls')),
     path('api/v1/', include('kearekisa_api.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
+    path('doc/', include_docs_urls(title='kearekisa_api')),
+    path('schema/', get_schema_view(
+        title='kearekisa_api_schema',
+        description='kearekisa_schema_api',
+        version='1.0.0'
+    ), name='open_core_api'),
 ]
 
 if settings.DEBUG:
